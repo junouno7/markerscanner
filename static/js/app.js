@@ -188,6 +188,9 @@ document.addEventListener('DOMContentLoaded', function() {
                 processingInterval = null;
             }
             
+            // Clear the processed image
+            processedImage.src = '';
+            
             // Update UI
             startCameraBtn.disabled = false;
             stopCameraBtn.disabled = true;
