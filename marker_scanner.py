@@ -36,7 +36,7 @@ def create_custom_dictionary(markers):
     # Create a predefined dictionary as base
     dictionary = cv2.aruco.getPredefinedDictionary(cv2.aruco.DICT_6X6_250)
     
-    # Replace the first len(markers) entries with our custom markers
+    # Replace the first len(markers) entries with our custom markersq
     for marker_id, marker_array in markers.items():
         if marker_id < 250:  # Maximum size of the dictionary
             # Extract the inner 6x6 grid (removing the border)
