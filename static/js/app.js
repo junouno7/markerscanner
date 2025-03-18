@@ -193,7 +193,7 @@ document.addEventListener('DOMContentLoaded', function() {
             captureContext.drawImage(cameraFeed, 0, 0, captureCanvas.width, captureCanvas.height);
             
             // Get image data as base64
-            const imageData = captureCanvas.toDataURL('image/jpeg', 0.7);
+            const imageData = captureCanvas.toDataURL('image/jpeg', 0.6);
             
             // Send to server for processing
             isProcessing = true;

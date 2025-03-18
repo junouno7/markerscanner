@@ -18,10 +18,10 @@ MARKERS = {
 
 # Processing settings
 PROCESSING = {
-    'frame_quality': float(os.environ.get('FRAME_QUALITY', 0.7)),   # JPEG quality for frame transmission (0.0-1.0)
-    'max_width': int(os.environ.get('MAX_WIDTH', 640)),       # Maximum processing width
-    'max_height': int(os.environ.get('MAX_HEIGHT', 480)),      # Maximum processing height
-    'process_every_n_ms': int(os.environ.get('PROCESS_RATE', 100))  # Process frames every N milliseconds
+    'frame_quality': float(os.environ.get('FRAME_QUALITY', 0.6)),   # Reduce quality slightly (0.7 -> 0.6)
+    'max_width': int(os.environ.get('MAX_WIDTH', 640)),       # Keep original width
+    'max_height': int(os.environ.get('MAX_HEIGHT', 480)),     # Keep original height
+    'process_every_n_ms': int(os.environ.get('PROCESS_RATE', 50))  # Process frames more frequently (100 -> 50)
 }
 
 # Advanced options
