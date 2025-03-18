@@ -89,12 +89,28 @@ def draw_markers(frame, corners, ids):
         # Add text for each marker with larger font size
         for i, corner in enumerate(corners):
             corner_points = corner.reshape(4, 2).astype(np.int32)
+            
+            # Calculate center X for horizontal alignment
             center_x = int(np.mean(corner_points[:, 0]))
-            center_y = int(np.mean(corner_points[:, 1]))
-            cv2.putText(frame_with_markers, f"ID: {ids[i][0]}", 
-                        (center_x, center_y), 
-                        cv2.FONT_HERSHEY_SIMPLEX, 
-                        1.2, (0, 255, 0), 3)
+            
+            # Calculate bottom Y position (maximum Y value plus offset)
+            bottom_y = int(np.max(corner_points[:, 1])) + 25  # px below the marker
+            
+            # Get the text to display and its size
+            text = f"ID: {ids[i][0]}"
+            font = cv2.FONT_HERSHEY_SIMPLEX
+            font_scale = 1.0
+            thickness = 2
+            (text_width, text_height), _ = cv2.getTextSize(text, font, font_scale, thickness)
+            
+            # Calculate position to center the text horizontally
+            text_x = center_x - (text_width // 2)
+            
+            # Draw the text
+            cv2.putText(frame_with_markers, text, 
+                        (text_x, bottom_y), 
+                        font, 
+                        font_scale, (0, 255, 0), thickness)
         
         return frame_with_markers
     

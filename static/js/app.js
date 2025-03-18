@@ -19,8 +19,8 @@ document.addEventListener('DOMContentLoaded', function() {
     
     // Processing settings - these should match server settings
     const PROCESSING = {
-        processEveryMs: 50,  // Process frames every 100ms by default
-        markerTimeoutSeconds: 7  // How long to keep markers visible
+        processEveryMs: 20,  // Process frames every 20ms by default
+        markerTimeoutSeconds: 30  // How long to keep markers visible
     };
 
     // Initialize the app
@@ -234,7 +234,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 const li = document.createElement('li');
                 const date = new Date(marker.timestamp * 1000);
                 const timeStr = date.toLocaleTimeString();
-                li.textContent = `ID: ${marker.id}   (Last seen: ${timeStr})`;
+                li.textContent = `ID: ${marker.id}${'\u00A0'.repeat(4)}(Last seen: ${timeStr})`;
                 markerList.appendChild(li);
             });
         }

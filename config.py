@@ -21,13 +21,13 @@ PROCESSING = {
     'frame_quality': float(os.environ.get('FRAME_QUALITY', 0.6)),   # Reduce quality slightly (0.7 -> 0.6)
     'max_width': int(os.environ.get('MAX_WIDTH', 640)),       # Keep original width
     'max_height': int(os.environ.get('MAX_HEIGHT', 480)),     # Keep original height
-    'process_every_n_ms': int(os.environ.get('PROCESS_RATE', 50))  # Process frames more frequently (100 -> 50)
+    'process_every_n_ms': int(os.environ.get('PROCESS_RATE', 20))  # Process frames more frequently (50 -> 20)
 }
 
 # Advanced options
 ADVANCED = {
     'cors_allowed_origins': os.environ.get('CORS_ORIGINS', '*'),  # CORS settings for socketio
-    'marker_timeout_seconds': int(os.environ.get('MARKER_TIMEOUT', 7))   # How long to display markers after last detection
+    'marker_timeout_seconds': int(os.environ.get('MARKER_TIMEOUT', 30))   # How long to display markers after last detection
 }
 
 # Try to load local settings if available
