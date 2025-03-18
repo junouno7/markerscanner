@@ -1,6 +1,10 @@
 # ArUco Marker Scanner
 
-A Python application for detecting and identifying custom ArUco markers using a camera. The app is designed to detect 50 custom 6x6 ArUco markers (with IDs 0-49) and display their ID numbers.
+A Python application for detecting and identifying custom ArUco markers using a camera. The app is designed to detect 50 custom + 200 dictionary 6x6 ArUco markers (with IDs 0-249) and display their ID numbers.
+
+## Live site
+
+The site is live at arucoscanner.onrender.com
 
 ## Requirements
 
@@ -77,24 +81,3 @@ Options:
 ## Marker Information
 
 The markers are 6x6 ArUco markers (8x8 including black border) intended to be printed at 15cm x 15cm physical size. The marker data is stored in `markers.txt`.
-
-## Android Conversion
-
-To convert this app to an Android APK, you can use tools like:
-
-1. **Kivy** with Buildozer:
-   - Wrap the OpenCV functionality in a Kivy application
-   - Use Buildozer to package as an Android APK
-
-2. **Chaquopy**:
-   - Integrate Python with a native Android application
-   - Package OpenCV for Android
-
-3. **OpenCV Android SDK**:
-   - Rewrite the app using Java/Kotlin with the OpenCV Android SDK
-
-See the [Android Conversion Guide](android_conversion.md) for more details.
-
-## License
-
-This project is open source and available under the MIT License. 
