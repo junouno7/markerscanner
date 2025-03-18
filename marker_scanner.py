@@ -67,8 +67,24 @@ def detect_markers(frame, dictionary, parameters):
 def draw_markers(frame, corners, ids):
     """Draw detected markers on frame."""
     if ids is not None:
-        # Draw marker borders only (no IDs) by passing empty array as IDs parameter
-        frame_with_markers = cv2.aruco.drawDetectedMarkers(frame.copy(), corners, None)
+        # Create a copy of the frame to draw on
+        frame_with_markers = frame.copy()
+        
+        # Draw marker borders
+        cv2.aruco.drawDetectedMarkers(frame_with_markers, corners, None)
+        
+        # Draw larger red squares at the top-left corner of each marker
+        for corner in corners:
+            corner_points = corner.reshape(4, 2).astype(np.int32)
+            # Get the top-left corner (first point in the array)
+            top_left = tuple(corner_points[0].astype(int))
+            # Draw a larger square (adjust size as needed)
+            square_size = 10  # Increase this for a larger square
+            cv2.rectangle(frame_with_markers, 
+                         (top_left[0] - square_size//2, top_left[1] - square_size//2),
+                         (top_left[0] + square_size//2, top_left[1] + square_size//2),
+                         (0, 0, 255),  # Red color
+                         -1)  # Filled square
         
         # Add text for each marker with larger font size
         for i, corner in enumerate(corners):

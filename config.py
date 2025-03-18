@@ -27,7 +27,7 @@ PROCESSING = {
 # Advanced options
 ADVANCED = {
     'cors_allowed_origins': os.environ.get('CORS_ORIGINS', '*'),  # CORS settings for socketio
-    'marker_timeout_seconds': int(os.environ.get('MARKER_TIMEOUT', 3))   # How long to display markers after last detection
+    'marker_timeout_seconds': int(os.environ.get('MARKER_TIMEOUT', 7))   # How long to display markers after last detection
 }
 
 # Try to load local settings if available
