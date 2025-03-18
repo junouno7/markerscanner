@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Marker Scanner</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.0.1/socket.io.js"></script>
+</head>
+<body>
+    <div class="container">
+        <h1>Marker Scanner</h1>
+
+        <div class="video-container">
+            <video id="cameraFeed" playsinline autoplay></video>
+            <canvas id="captureCanvas" style="display: none;"></canvas>
+            <img id="processedImage" class="processed-image" alt="Processed Video Feed">
+        </div>
+
+        <div class="controls">
+            <button id="startCamera" class="btn">Start Camera</button>
+            <button id="stopCamera" class="btn" disabled>Stop Camera</button>
+            <select id="cameraSelect" class="select">
+                <option value="">Select Camera</option>
+            </select>
+        </div>
+
+        <div class="marker-list">
+            <h2>Detected Markers</h2>
+            <div id="markerContainer" class="marker-container">
+                <ul id="markerList"></ul>
+            </div>
+        </div>
+
+        <div class="status-container">
+            <p id="statusMessage" class="status-message">Ready to connect</p>
+        </div>
+    </div>
+
+    <script src="{{ url_for('static', filename='js/app.js') }}"></script>
+</body>
+</html> 

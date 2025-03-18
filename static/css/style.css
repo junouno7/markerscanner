@@ -1,0 +1,136 @@
+/* Global Styles */
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    font-family: Arial, sans-serif;
+    background-color: #f4f4f4;
+    color: #333;
+    line-height: 1.6;
+}
+
+.container {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 20px;
+}
+
+h1, h2 {
+    text-align: center;
+    margin-bottom: 20px;
+    color: #333;
+}
+
+/* Video Container */
+.video-container {
+    width: 100%;
+    max-width: 640px;
+    margin: 0 auto 20px;
+    border: 3px solid #ddd;
+    border-radius: 5px;
+    overflow: hidden;
+    background-color: #000;
+    position: relative;
+}
+
+#cameraFeed, #processedImage {
+    width: 100%;
+    display: block;
+}
+
+#processedImage {
+    min-height: 200px;
+    background-color: #111;
+}
+
+/* Controls */
+.controls {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+    margin-bottom: 20px;
+}
+
+.btn {
+    padding: 8px 16px;
+    background-color: #4caf50;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 16px;
+}
+
+.btn:hover {
+    background-color: #45a049;
+}
+
+.btn:disabled {
+    background-color: #cccccc;
+    cursor: not-allowed;
+}
+
+.select {
+    padding: 8px;
+    border-radius: 4px;
+    border: 1px solid #ddd;
+    font-size: 16px;
+}
+
+/* Marker List */
+.marker-list {
+    margin-bottom: 20px;
+}
+
+.marker-container {
+    max-height: 200px;
+    overflow-y: auto;
+    background-color: white;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    padding: 10px;
+}
+
+#markerList {
+    list-style-type: none;
+}
+
+#markerList li {
+    padding: 8px;
+    border-bottom: 1px solid #eee;
+}
+
+#markerList li:last-child {
+    border-bottom: none;
+}
+
+/* Status Message */
+.status-container {
+    text-align: center;
+}
+
+.status-message {
+    padding: 10px;
+    background-color: #f8f8f8;
+    border-radius: 4px;
+    border-left: 4px solid #4caf50;
+}
+
+/* Mobile Responsiveness */
+@media (max-width: 600px) {
+    .container {
+        padding: 10px;
+    }
+    
+    .controls {
+        flex-direction: column;
+    }
+    
+    .btn, .select {
+        width: 100%;
+        margin-bottom: 10px;
+    }
+} 
