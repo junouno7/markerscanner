@@ -4,7 +4,7 @@ A Python application for detecting and identifying custom ArUco markers using a 
 
 ## Live site
 
-The site is live at arucoscanner.onrender.com
+Visit the live site [here](arucoscanner.onrender.com)
 
 ## Requirements
 
