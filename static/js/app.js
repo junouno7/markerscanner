@@ -17,9 +17,19 @@ document.addEventListener('DOMContentLoaded', function() {
     const captureContext = captureCanvas.getContext('2d');
     const detectedMarkers = {};
     
+    // Zoom variables
+    let currentScale = 1;
+    let lastScale = 1;
+    let startDistance = 0;
+    let isPinching = false;
+    let startX = 0;
+    let startY = 0;
+    let lastX = 0;
+    let lastY = 0;
+    
     // Processing settings - these should match server settings
     const PROCESSING = {
-        processEveryMs: 20,  // Process frames every 20ms by default
+        processEveryMs: 33,  // Process frames every 33ms by default
         markerTimeoutSeconds: 30  // How long to keep markers visible
     };
 
@@ -76,8 +86,98 @@ document.addEventListener('DOMContentLoaded', function() {
             }
         });
 
+        // Initialize zoom functionality
+        initZoom();
+
         // Populate camera list
         populateCameraList();
+    }
+
+    // Initialize pinch-to-zoom functionality
+    function initZoom() {
+        const imageContainer = document.querySelector('.video-container');
+        
+        // Add reset zoom button
+        const resetButton = document.createElement('button');
+        resetButton.textContent = 'Reset Zoom';
+        resetButton.className = 'btn reset-zoom';
+        resetButton.style.position = 'absolute';
+        resetButton.style.bottom = '10px';
+        resetButton.style.right = '10px';
+        resetButton.style.display = 'none';
+        resetButton.style.zIndex = '100';
+        resetButton.style.opacity = '0.7';
+        resetButton.addEventListener('click', resetZoom);
+        imageContainer.appendChild(resetButton);
+        
+        // Function to reset zoom
+        function resetZoom() {
+            currentScale = 1;
+            lastScale = 1;
+            lastX = 0;
+            lastY = 0;
+            updateTransform();
+            resetButton.style.display = 'none';
+        }
+        
+        // Function to update the transform
+        function updateTransform() {
+            processedImage.style.transformOrigin = 'center';
+            processedImage.style.transform = `scale(${currentScale}) translate(${lastX}px, ${lastY}px)`;
+        }
+        
+        // Touch start event
+        processedImage.addEventListener('touchstart', (e) => {
+            if (e.touches.length === 2) {
+                // Pinch gesture starting
+                isPinching = true;
+                startDistance = getDistance(e.touches[0], e.touches[1]);
+            } else if (e.touches.length === 1 && currentScale > 1) {
+                // Start panning
+                startX = e.touches[0].clientX - lastX;
+                startY = e.touches[0].clientY - lastY;
+            }
+            e.preventDefault();
+        });
+        
+        // Touch move event
+        processedImage.addEventListener('touchmove', (e) => {
+            if (isPinching && e.touches.length === 2) {
+                // Calculate new scale
+                const distance = getDistance(e.touches[0], e.touches[1]);
+                const scale = distance / startDistance;
+                
+                currentScale = Math.max(1, Math.min(5, lastScale * scale)); // Limit zoom between 1x and 5x
+                
+                if (currentScale > 1) {
+                    resetButton.style.display = 'block';
+                }
+                
+                updateTransform();
+            } else if (e.touches.length === 1 && currentScale > 1) {
+                // Handle panning when zoomed in
+                lastX = e.touches[0].clientX - startX;
+                lastY = e.touches[0].clientY - startY;
+                updateTransform();
+            }
+            e.preventDefault();
+        });
+        
+        // Touch end event
+        processedImage.addEventListener('touchend', (e) => {
+            if (isPinching) {
+                isPinching = false;
+                lastScale = currentScale;
+            }
+            e.preventDefault();
+        });
+        
+        // Calculate distance between two touch points
+        function getDistance(touch1, touch2) {
+            const dx = touch1.clientX - touch2.clientX;
+            const dy = touch1.clientY - touch2.clientY;
+            return Math.sqrt(dx * dx + dy * dy);
+        }
     }
 
     async function populateCameraList() {
