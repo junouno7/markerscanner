@@ -166,6 +166,7 @@ document.addEventListener('DOMContentLoaded', function() {
             // Update UI
             startCameraBtn.disabled = true;
             stopCameraBtn.disabled = false;
+            updateStatus('Camera started', false);
 
             // Start processing
             startFrameProcessing();
@@ -190,7 +191,7 @@ document.addEventListener('DOMContentLoaded', function() {
             // Update UI
             startCameraBtn.disabled = false;
             stopCameraBtn.disabled = true;
-            updateStatus('Camera stopped', true); // Pass true to indicate error state for red border
+            updateStatus('Camera stopped', true);
         }
     }
 
@@ -279,11 +280,7 @@ document.addEventListener('DOMContentLoaded', function() {
         zoomIndicator.id = 'zoomIndicator';
         zoomIndicator.className = 'zoom-indicator';
         zoomIndicator.textContent = '1.0x';
-        // Don't hide it initially - it will be shown when zoom is available
         document.querySelector('.video-container').appendChild(zoomIndicator);
-        
-        // Show indicator with initial zoom value
-        updateZoomIndicator(zoomLevel);
         
         // Add reset zoom button
         const resetZoomBtn = document.createElement('button');
@@ -297,11 +294,9 @@ document.addEventListener('DOMContentLoaded', function() {
         resetZoomBtn.addEventListener('click', () => {
             applyZoom(minZoom);
             updateZoomIndicator(minZoom);
-            // Show zoom indicator briefly when reset
-            showZoomIndicator();
+            // Hide reset button after a delay
             clearTimeout(zoomIndicatorTimeout);
             zoomIndicatorTimeout = setTimeout(() => {
-                hideZoomIndicator();
                 resetZoomBtn.style.display = 'none';
             }, 1000);
         });
@@ -321,9 +316,6 @@ document.addEventListener('DOMContentLoaded', function() {
                 startDistance = getTouchDistance(e.touches);
                 initialZoom = zoomLevel;
                 pinchInProgress = true;
-                
-                // Show zoom indicator
-                showZoomIndicator();
             }
         }, { passive: false });
         
@@ -362,8 +354,6 @@ document.addEventListener('DOMContentLoaded', function() {
                 if (zoomLevel <= minZoom || Math.abs(zoomLevel - minZoom) < 0.1) {
                     resetZoomBtn.style.display = 'none';
                 }
-                
-                // Don't hide zoom indicator anymore since we want it always visible
             }
         });
         
@@ -393,16 +383,7 @@ document.addEventListener('DOMContentLoaded', function() {
             }
         }
         
-        // Functions to manage zoom indicator
-        function showZoomIndicator() {
-            // No need to show/hide since it's always visible
-            updateZoomIndicator(zoomLevel);
-        }
-        
-        function hideZoomIndicator() {
-            // This function is kept for compatibility but does nothing now
-        }
-        
+        // Function to update zoom indicator
         function updateZoomIndicator(zoom) {
             const indicator = document.getElementById('zoomIndicator');
             indicator.textContent = `${zoom.toFixed(1)}x`;
