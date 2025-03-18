@@ -152,11 +152,11 @@ document.addEventListener('DOMContentLoaded', function() {
                 minZoom = capabilities.zoom.min;
                 maxZoom = capabilities.zoom.max;
                 zoomLevel = minZoom;
-                updateStatus(`Camera Live - Zoom Available (${minZoom}x-${maxZoom.toFixed(1)}x)`);
+                updateStatus(`Camera Live - Zoom available (${minZoom}x-${maxZoom.toFixed(1)}x)`, false);
                 // Initialize zoom controls
                 initZoomControls();
             } else {
-                updateStatus('Camera Live - Zoom not available on this device');
+                updateStatus('Camera Live - Zoom not available', false);
             }
             
             // Set canvas size to match video
@@ -166,7 +166,6 @@ document.addEventListener('DOMContentLoaded', function() {
             // Update UI
             startCameraBtn.disabled = true;
             stopCameraBtn.disabled = false;
-            updateStatus('Camera started', false);
 
             // Start processing
             startFrameProcessing();
@@ -312,11 +311,12 @@ document.addEventListener('DOMContentLoaded', function() {
         resetZoomBtn.addEventListener('click', () => {
             applyZoom(minZoom);
             updateZoomIndicator(minZoom);
-            // Hide reset button after a delay
+            
+            // Keep button visible but set a timeout to hide it after 1 second
             clearTimeout(zoomIndicatorTimeout);
             zoomIndicatorTimeout = setTimeout(() => {
                 resetZoomBtn.style.display = 'none';
-            }, 1000);
+            }, 1500);
         });
         
         // Setup touch events for pinch zoom
