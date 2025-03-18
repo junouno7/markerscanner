@@ -44,13 +44,38 @@ h1, h2 {
 #processedImage {
     min-height: 200px;
     background-color: #111;
-    touch-action: none; /* Prevent browser's default touch actions */
-    transition: transform 0.05s ease-out; /* Smooth transition for zoom */
+}
+
+/* Zoom indicator */
+.zoom-indicator {
+    position: absolute;
+    bottom: 10px;
+    left: 10px;
+    background-color: rgba(0, 0, 0, 0.6);
+    color: white;
+    padding: 4px 8px;
+    border-radius: 4px;
+    font-size: 14px;
+    z-index: 5;
+    display: none;
 }
 
 /* Reset zoom button */
-.reset-zoom {
-    background-color: #333 !important;
+.reset-zoom-btn {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    background-color: rgba(0, 0, 0, 0.6);
+    color: white;
+    padding: 4px 8px;
+    border-radius: 4px;
+    font-size: 12px;
+    z-index: 5;
+    display: none;
+}
+
+.reset-zoom-btn:hover {
+    background-color: rgba(0, 0, 0, 0.8);
 }
 
 /* Controls */

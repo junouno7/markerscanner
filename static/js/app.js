@@ -16,16 +16,10 @@ document.addEventListener('DOMContentLoaded', function() {
     let processingInterval = null;
     const captureContext = captureCanvas.getContext('2d');
     const detectedMarkers = {};
-    
-    // Zoom variables
-    let currentScale = 1;
-    let lastScale = 1;
-    let startDistance = 0;
-    let isPinching = false;
-    let startX = 0;
-    let startY = 0;
-    let lastX = 0;
-    let lastY = 0;
+    let zoomLevel = 1.0; // Current zoom level
+    let maxZoom = 10.0;  // Default max zoom (will be updated if available)
+    let minZoom = 1.0;   // Default min zoom
+    let videoTrack = null; // Current video track for zoom control
     
     // Processing settings - these should match server settings
     const PROCESSING = {
@@ -86,98 +80,8 @@ document.addEventListener('DOMContentLoaded', function() {
             }
         });
 
-        // Initialize zoom functionality
-        initZoom();
-
         // Populate camera list
         populateCameraList();
-    }
-
-    // Initialize pinch-to-zoom functionality
-    function initZoom() {
-        const imageContainer = document.querySelector('.video-container');
-        
-        // Add reset zoom button
-        const resetButton = document.createElement('button');
-        resetButton.textContent = 'Reset Zoom';
-        resetButton.className = 'btn reset-zoom';
-        resetButton.style.position = 'absolute';
-        resetButton.style.bottom = '10px';
-        resetButton.style.right = '10px';
-        resetButton.style.display = 'none';
-        resetButton.style.zIndex = '100';
-        resetButton.style.opacity = '0.7';
-        resetButton.addEventListener('click', resetZoom);
-        imageContainer.appendChild(resetButton);
-        
-        // Function to reset zoom
-        function resetZoom() {
-            currentScale = 1;
-            lastScale = 1;
-            lastX = 0;
-            lastY = 0;
-            updateTransform();
-            resetButton.style.display = 'none';
-        }
-        
-        // Function to update the transform
-        function updateTransform() {
-            processedImage.style.transformOrigin = 'center';
-            processedImage.style.transform = `scale(${currentScale}) translate(${lastX}px, ${lastY}px)`;
-        }
-        
-        // Touch start event
-        processedImage.addEventListener('touchstart', (e) => {
-            if (e.touches.length === 2) {
-                // Pinch gesture starting
-                isPinching = true;
-                startDistance = getDistance(e.touches[0], e.touches[1]);
-            } else if (e.touches.length === 1 && currentScale > 1) {
-                // Start panning
-                startX = e.touches[0].clientX - lastX;
-                startY = e.touches[0].clientY - lastY;
-            }
-            e.preventDefault();
-        });
-        
-        // Touch move event
-        processedImage.addEventListener('touchmove', (e) => {
-            if (isPinching && e.touches.length === 2) {
-                // Calculate new scale
-                const distance = getDistance(e.touches[0], e.touches[1]);
-                const scale = distance / startDistance;
-                
-                currentScale = Math.max(1, Math.min(5, lastScale * scale)); // Limit zoom between 1x and 5x
-                
-                if (currentScale > 1) {
-                    resetButton.style.display = 'block';
-                }
-                
-                updateTransform();
-            } else if (e.touches.length === 1 && currentScale > 1) {
-                // Handle panning when zoomed in
-                lastX = e.touches[0].clientX - startX;
-                lastY = e.touches[0].clientY - startY;
-                updateTransform();
-            }
-            e.preventDefault();
-        });
-        
-        // Touch end event
-        processedImage.addEventListener('touchend', (e) => {
-            if (isPinching) {
-                isPinching = false;
-                lastScale = currentScale;
-            }
-            e.preventDefault();
-        });
-        
-        // Calculate distance between two touch points
-        function getDistance(touch1, touch2) {
-            const dx = touch1.clientX - touch2.clientX;
-            const dy = touch1.clientY - touch2.clientY;
-            return Math.sqrt(dx * dx + dy * dy);
-        }
     }
 
     async function populateCameraList() {
@@ -218,7 +122,8 @@ document.addEventListener('DOMContentLoaded', function() {
                 video: {
                     facingMode: 'environment', // Use back camera if available
                     width: { ideal: 640 },
-                    height: { ideal: 480 }
+                    height: { ideal: 480 },
+                    zoom: 1.0 // Initial zoom level
                 }
             };
 
@@ -227,13 +132,32 @@ document.addEventListener('DOMContentLoaded', function() {
                 constraints.video = {
                     deviceId: { exact: cameraSelect.value },
                     width: { ideal: 640 },
-                    height: { ideal: 480 }
+                    height: { ideal: 480 },
+                    zoom: 1.0 // Initial zoom level
                 };
             }
 
             // Get user media
             stream = await navigator.mediaDevices.getUserMedia(constraints);
             cameraFeed.srcObject = stream;
+            
+            // Get the video track for controlling zoom
+            videoTrack = stream.getVideoTracks()[0];
+            
+            // Get the capabilities of the camera
+            const capabilities = videoTrack.getCapabilities();
+            
+            // Check if zoom is supported
+            if (capabilities.zoom) {
+                minZoom = capabilities.zoom.min;
+                maxZoom = capabilities.zoom.max;
+                zoomLevel = minZoom;
+                updateStatus(`Camera started - Zoom available (${minZoom}x-${maxZoom.toFixed(1)}x)`);
+                // Initialize zoom controls
+                initZoomControls();
+            } else {
+                updateStatus('Camera started - Zoom not available on this device');
+            }
             
             // Set canvas size to match video
             captureCanvas.width = 640;
@@ -242,7 +166,6 @@ document.addEventListener('DOMContentLoaded', function() {
             // Update UI
             startCameraBtn.disabled = true;
             stopCameraBtn.disabled = false;
-            updateStatus('Camera started');
 
             // Start processing
             startFrameProcessing();
@@ -344,5 +267,137 @@ document.addEventListener('DOMContentLoaded', function() {
         statusMessage.textContent = message;
         statusMessage.style.borderLeftColor = isError ? '#f44336' : '#4caf50';
         console.log(message);
+    }
+
+    function initZoomControls() {
+        // Add zoom controls to the UI
+        const zoomControlsDiv = document.createElement('div');
+        zoomControlsDiv.className = 'zoom-controls';
+        
+        // Add a zoom indicator
+        const zoomIndicator = document.createElement('div');
+        zoomIndicator.id = 'zoomIndicator';
+        zoomIndicator.className = 'zoom-indicator';
+        zoomIndicator.textContent = '1.0x';
+        zoomIndicator.style.display = 'none';
+        document.querySelector('.video-container').appendChild(zoomIndicator);
+        
+        // Add reset zoom button
+        const resetZoomBtn = document.createElement('button');
+        resetZoomBtn.id = 'resetZoom';
+        resetZoomBtn.className = 'btn reset-zoom-btn';
+        resetZoomBtn.textContent = 'Reset Zoom';
+        resetZoomBtn.style.display = 'none';
+        document.querySelector('.video-container').appendChild(resetZoomBtn);
+        
+        // Reset zoom button click event
+        resetZoomBtn.addEventListener('click', () => {
+            applyZoom(minZoom);
+            updateZoomIndicator(minZoom);
+            // Show zoom indicator briefly when reset
+            showZoomIndicator();
+            clearTimeout(zoomIndicatorTimeout);
+            zoomIndicatorTimeout = setTimeout(() => {
+                hideZoomIndicator();
+                resetZoomBtn.style.display = 'none';
+            }, 1500);
+        });
+        
+        // Setup touch events for pinch zoom
+        const videoContainer = document.querySelector('.video-container');
+        
+        let startDistance = 0;
+        let initialZoom = 1.0;
+        let pinchInProgress = false;
+        let zoomIndicatorTimeout;
+        
+        videoContainer.addEventListener('touchstart', (e) => {
+            if (e.touches.length === 2) {
+                e.preventDefault();
+                // Get initial distance between the two touch points
+                startDistance = getTouchDistance(e.touches);
+                initialZoom = zoomLevel;
+                pinchInProgress = true;
+                
+                // Show zoom indicator
+                showZoomIndicator();
+            }
+        }, { passive: false });
+        
+        videoContainer.addEventListener('touchmove', (e) => {
+            if (pinchInProgress && e.touches.length === 2) {
+                e.preventDefault();
+                
+                // Calculate new distance and derive zoom factor
+                const currentDistance = getTouchDistance(e.touches);
+                const zoomFactor = currentDistance / startDistance;
+                
+                // Calculate new zoom level
+                let newZoom = initialZoom * zoomFactor;
+                
+                // Clamp zoom level to min/max
+                newZoom = Math.max(minZoom, Math.min(maxZoom, newZoom));
+                
+                // Apply zoom to camera
+                applyZoom(newZoom);
+                
+                // Update indicator
+                updateZoomIndicator(newZoom);
+                
+                // Show reset button if zoomed in
+                if (newZoom > minZoom) {
+                    resetZoomBtn.style.display = 'block';
+                }
+            }
+        }, { passive: false });
+        
+        videoContainer.addEventListener('touchend', (e) => {
+            if (pinchInProgress) {
+                pinchInProgress = false;
+                // Hide zoom indicator after a delay
+                clearTimeout(zoomIndicatorTimeout);
+                zoomIndicatorTimeout = setTimeout(() => {
+                    hideZoomIndicator();
+                }, 1500);
+            }
+        });
+        
+        // Function to calculate distance between two touch points
+        function getTouchDistance(touches) {
+            const dx = touches[0].pageX - touches[1].pageX;
+            const dy = touches[0].pageY - touches[1].pageY;
+            return Math.sqrt(dx * dx + dy * dy);
+        }
+        
+        // Function to apply zoom to the camera
+        function applyZoom(newZoom) {
+            if (videoTrack && videoTrack.getCapabilities().zoom) {
+                const constraints = { advanced: [{ zoom: newZoom }] };
+                videoTrack.applyConstraints(constraints)
+                    .then(() => {
+                        zoomLevel = newZoom;
+                    })
+                    .catch(error => {
+                        console.error('Error applying zoom:', error);
+                    });
+            }
+        }
+        
+        // Functions to manage zoom indicator
+        function showZoomIndicator() {
+            const indicator = document.getElementById('zoomIndicator');
+            indicator.style.display = 'block';
+            updateZoomIndicator(zoomLevel);
+        }
+        
+        function hideZoomIndicator() {
+            const indicator = document.getElementById('zoomIndicator');
+            indicator.style.display = 'none';
+        }
+        
+        function updateZoomIndicator(zoom) {
+            const indicator = document.getElementById('zoomIndicator');
+            indicator.textContent = `${zoom.toFixed(1)}x`;
+        }
     }
 }); 
