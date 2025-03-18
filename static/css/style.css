@@ -174,7 +174,7 @@ h1, h2 {
         flex-direction: column;
     }
     
-    .btn, .select {
+    .btn:not(.reset-zoom-btn), .select {
         width: 100%;
         margin-bottom: 10px;
     }

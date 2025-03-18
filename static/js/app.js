@@ -188,8 +188,23 @@ document.addEventListener('DOMContentLoaded', function() {
                 processingInterval = null;
             }
             
-            // Clear the processed image
-            processedImage.src = '';
+            // Clean up video feed and reset zoom controls
+            videoTrack = null;
+            zoomLevel = 1.0;
+            
+            // Reset processed image to black
+            processedImage.removeAttribute('src');
+            
+            // Clear any existing zoom indicators and reset buttons
+            const existingIndicator = document.getElementById('zoomIndicator');
+            if (existingIndicator) {
+                existingIndicator.remove();
+            }
+            
+            const existingResetBtn = document.getElementById('resetZoom');
+            if (existingResetBtn) {
+                existingResetBtn.remove();
+            }
             
             // Update UI
             startCameraBtn.disabled = false;
