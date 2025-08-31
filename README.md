@@ -1,6 +1,6 @@
 # ArUco Marker Scanner
 
-A Python application for detecting and identifying custom ArUco markers using a camera. The app is designed to detect 50 custom + 200 dictionary 6x6 ArUco markers (with IDs 0-249) and display their ID numbers.
+A real-time web application that detects and identifies ArUco markers through live camera feed using Flask, WebSocket, and OpenCV for computer vision processing. The app is designed to detect 50 custom + 200 dictionary 6x6 ArUco markers (with IDs 0-249) and display their ID numbers.
 
 ## Live site
 
