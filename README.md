@@ -81,3 +81,5 @@ Options:
 ## Marker Information
 
 The markers are 6x6 ArUco markers (8x8 including black border) intended to be printed at 15cm x 15cm physical size. The marker data is stored in `markers.txt`.
+
+Tags: Aruco, Marker, Scanner, App, OpenCV, Python
