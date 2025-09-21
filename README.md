@@ -6,6 +6,15 @@ A real-time web application that detects and identifies ArUco markers through li
 
 Visit the live site [here](https://arucoscanner.onrender.com/)
 
+## Demo
+
+<video width="600" controls>
+  <source src="./demo.mp4" type="video/mp4">
+  Your browser does not support the video tag.
+</video>
+
+*Real-time ArUco marker detection demo*
+
 ## Requirements
 
 - Python 3.6+
