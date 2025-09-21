@@ -8,7 +8,7 @@ Visit the live site [here](https://arucoscanner.onrender.com/)
 
 ## Demo
 
-![Demo Video](./demo.mp4)
+[![Demo Video](./demo.gif)]
 
 *Real-time ArUco marker detection demo*
 
