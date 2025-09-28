@@ -10,7 +10,7 @@ Visit the live site [here](https://arucoscanner.onrender.com/)
 
 [![Demo Video](https://img.youtube.com/vi/jOH16TEf3Po/maxresdefault.jpg)](http://youtube.com/shorts/jOH16TEf3Po)
 
-*Real-time ArUco marker detection demo - *Click to watch**
+*Real-time ArUco marker detection demo - \*Click to watch\**
 
 ## Requirements
 
