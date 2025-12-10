@@ -24,7 +24,7 @@ document.addEventListener('DOMContentLoaded', function() {
     // Processing settings - these should match server settings
     const PROCESSING = {
         processEveryMs: 33,  // Process frames every 33ms by default
-        markerTimeoutSeconds: 30  // How long to keep markers visible
+        markerTimeoutSeconds: 120  // How long to keep markers visible
     };
 
     // Initialize the app
@@ -234,7 +234,7 @@ document.addEventListener('DOMContentLoaded', function() {
             captureContext.drawImage(cameraFeed, 0, 0, captureCanvas.width, captureCanvas.height);
             
             // Get image data as base64
-            const imageData = captureCanvas.toDataURL('image/jpeg', 0.6);
+            const imageData = captureCanvas.toDataURL('image/jpeg', 0.5);
             
             // Send to server for processing
             isProcessing = true;
@@ -316,7 +316,7 @@ document.addEventListener('DOMContentLoaded', function() {
             clearTimeout(zoomIndicatorTimeout);
             zoomIndicatorTimeout = setTimeout(() => {
                 resetZoomBtn.style.display = 'none';
-            }, 1500);
+            }, 1000);
         });
         
         // Setup touch events for pinch zoom

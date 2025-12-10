@@ -18,7 +18,7 @@ MARKERS = {
 
 # Processing settings
 PROCESSING = {
-    'frame_quality': float(os.environ.get('FRAME_QUALITY', 0.6)),   # Reduce quality slightly (0.7 -> 0.6)
+    'frame_quality': float(os.environ.get('FRAME_QUALITY', 0.5)),   # JPEG quality (lower = smaller payload, faster)
     'max_width': int(os.environ.get('MAX_WIDTH', 640)),       # Keep original width
     'max_height': int(os.environ.get('MAX_HEIGHT', 480)),     # Keep original height
     'process_every_n_ms': int(os.environ.get('PROCESS_RATE', 33))  # Process frames more frequently (20 -> 33)
@@ -27,7 +27,7 @@ PROCESSING = {
 # Advanced options
 ADVANCED = {
     'cors_allowed_origins': os.environ.get('CORS_ORIGINS', '*'),  # CORS settings for socketio
-    'marker_timeout_seconds': int(os.environ.get('MARKER_TIMEOUT', 30))   # How long to display markers after last detection
+    'marker_timeout_seconds': int(os.environ.get('MARKER_TIMEOUT', 120))   # How long to display markers after last detection
 }
 
 # Try to load local settings if available
