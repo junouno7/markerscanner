@@ -121,8 +121,8 @@ document.addEventListener('DOMContentLoaded', function() {
             const constraints = {
                 video: {
                     facingMode: 'environment', // Use back camera if available
-                    width: { ideal: 640 },
-                    height: { ideal: 480 },
+                    width: { ideal: 480 },
+                    height: { ideal: 360 },
                     zoom: 1.0 // Initial zoom level
                 }
             };
@@ -131,8 +131,8 @@ document.addEventListener('DOMContentLoaded', function() {
             if (cameraSelect.value) {
                 constraints.video = {
                     deviceId: { exact: cameraSelect.value },
-                    width: { ideal: 640 },
-                    height: { ideal: 480 },
+                    width: { ideal: 480 },
+                    height: { ideal: 360 },
                     zoom: 1.0 // Initial zoom level
                 };
             }
@@ -160,8 +160,8 @@ document.addEventListener('DOMContentLoaded', function() {
             }
             
             // Set canvas size to match video
-            captureCanvas.width = 640;
-            captureCanvas.height = 480;
+            captureCanvas.width = 480;
+            captureCanvas.height = 360;
 
             // Update UI
             startCameraBtn.disabled = true;
